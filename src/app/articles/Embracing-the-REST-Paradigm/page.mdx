@@ -1,0 +1,78 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+export const article = {
+  author: 'Nikish',
+  date: '2024-09-15',
+  title: 'Embracing the REST Paradigm: Building Scalable and Maintainable APIs',
+  description:
+    'REST (Representational State Transfer) has become the de facto standard for designing robust, scalable, and maintainable web APIs.',
+}
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+}
+
+export default (props) => <ArticleLayout article={article} {...props} />
+
+When it comes to modern web development, the **REST paradigm** remains a cornerstone for building scalable and maintainable APIs. By adhering to a uniform interface, statelessness, and clear resource-based endpoints, REST provides a clear path toward structured, consistent, and testable services.
+
+## What is REST?
+
+REST stands for **Representational State Transfer**. It is an architectural style that defines a set of constraints and principles for how web services should communicate. In essence, it’s about leveraging the existing protocols of the web—most commonly **HTTP**—to create standardized interfaces for your data.
+
+Key principles include:
+
+- **Client-Server Separation:** The user interface (client) and the data storage (server) should remain independent.
+- **Statelessness:** Each request from a client contains all the information needed by the server to carry out the request, making server-side sessions unnecessary.
+- **Uniform Interface:** Every resource is identified by a unique URI, and interactions use standard HTTP methods like GET, POST, PUT, and DELETE.
+- **Layered System:** A client doesn’t need to know whether it’s communicating directly with the server or through an intermediary.
+
+## Building a Simple REST API
+
+Below is a brief example of how you might implement a basic RESTful service using Node.js and Express:
+
+```js
+import express from 'express'
+
+const app = express()
+app.use(express.json())
+
+const planets = [
+  { id: 1, name: 'Mercury' },
+  { id: 2, name: 'Venus' },
+  { id: 3, name: 'Earth' },
+]
+
+// GET: Retrieve all planets
+app.get('/planets', (req, res) => {
+  res.json(planets)
+})
+
+// POST: Create a new planet
+app.post('/planets', (req, res) => {
+  const newPlanet = { id: planets.length + 1, ...req.body }
+  planets.push(newPlanet)
+  res.status(201).json(newPlanet)
+})
+
+// PUT: Update a planet
+app.put('/planets/:id', (req, res) => {
+  const { id } = req.params
+  const index = planets.findIndex((planet) => planet.id === parseInt(id))
+  planets[index] = { ...planets[index], ...req.body }
+  res.json(planets[index])
+})
+
+// DELETE: Remove a planet
+app.delete('/planets/:id', (req, res) => {
+  const { id } = req.params
+  const index = planets.findIndex((planet) => planet.id === parseInt(id))
+  planets.splice(index, 1)
+  res.status(204).send()
+})
+
+app.listen(3000, () => {
+  console.log('Server running on http://localhost:3000')
+})
+```
